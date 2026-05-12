@@ -1,0 +1,103 @@
+@startuml BankingManagementSystem
+skinparam classAttributeIconSize 0
+
+package "com.bankmgmt.model" {
+  abstract class AbstractEntity {
+    # long id
+    + getId()
+    + setId()
+  }
+  class User {
+    + Role role
+    + describe()
+  }
+  class Account
+  class BankTransaction
+  class ActivityLog
+  class Admin
+  enum Role
+  enum AccountStatus
+  enum TransactionType
+
+  AbstractEntity <|-- User
+  AbstractEntity <|-- Account
+  AbstractEntity <|-- BankTransaction
+  AbstractEntity <|-- ActivityLog
+  AbstractEntity <|-- Admin
+  User --> Role
+  Account --> AccountStatus
+  BankTransaction --> TransactionType
+}
+
+package "com.bankmgmt.dao" {
+  interface IUserDAO
+  interface IAccountDAO
+  interface ITransactionDAO
+  interface IActivityLogDAO
+  interface IAdminDAO
+  class BaseDAO
+  class UserDAO
+  class AccountDAO
+  class TransactionDAO
+  class ActivityLogDAO
+  class AdminDAO
+
+  BaseDAO <|-- UserDAO
+  BaseDAO <|-- AccountDAO
+  BaseDAO <|-- TransactionDAO
+  BaseDAO <|-- ActivityLogDAO
+  BaseDAO <|-- AdminDAO
+  IUserDAO <|.. UserDAO
+  IAccountDAO <|.. AccountDAO
+  ITransactionDAO <|.. TransactionDAO
+  IActivityLogDAO <|.. ActivityLogDAO
+  IAdminDAO <|.. AdminDAO
+}
+
+package "com.bankmgmt.service" {
+  class AuthService {
+    + login()
+    + registerCustomer()
+    + resetPasswordAfterVerification()
+  }
+  class BankingService {
+    + deposit()
+    + withdraw()
+    + transfer()
+  }
+  class AdminService {
+    + toggleUserActive()
+    + setAccountStatus()
+    + ledger()
+  }
+}
+
+package "com.bankmgmt.ui" {
+  class BankingApp
+  class LoginFrame
+  class UserDashboardFrame
+  class AdminDashboardFrame
+}
+
+package "com.bankmgmt.database" {
+  class DatabaseConnection
+}
+
+AuthService ..> IUserDAO
+AuthService ..> IAdminDAO
+AuthService ..> IActivityLogDAO
+BankingService ..> IAccountDAO
+BankingService ..> ITransactionDAO
+BankingService ..> IActivityLogDAO
+BankingService ..> DatabaseConnection
+AdminService ..> IUserDAO
+AdminService ..> IAccountDAO
+AdminService ..> ITransactionDAO
+AdminService ..> IActivityLogDAO
+AdminService ..> IAdminDAO
+
+LoginFrame ..> AuthService
+UserDashboardFrame ..> BankingService
+AdminDashboardFrame ..> AdminService
+
+@enduml
